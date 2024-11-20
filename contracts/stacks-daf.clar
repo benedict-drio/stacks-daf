@@ -205,10 +205,14 @@
             ;; Update vote counts
             (map-set proposals proposal-id 
                 (merge proposal 
-                    (if vote-for
-                        {yes-votes: (+ (get yes-votes proposal) voter-power)}
-                        {no-votes: (+ (get no-votes proposal) voter-power)}
-                    )
+                    {
+                        yes-votes: (if vote-for 
+                            (+ (get yes-votes proposal) voter-power)
+                            (get yes-votes proposal)),
+                        no-votes: (if vote-for
+                            (get no-votes proposal)
+                            (+ (get no-votes proposal) voter-power))
+                    }
                 )
             )
             
@@ -216,6 +220,7 @@
         )
     )
 )
+
 
 (define-public (execute-proposal (proposal-id uint))
     (begin
