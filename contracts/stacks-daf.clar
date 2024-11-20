@@ -154,3 +154,36 @@
         )
     )
 )
+
+(define-public (create-proposal 
+    (description (string-ascii 256))
+    (amount uint)
+    (target principal)
+    (duration uint)
+)
+    (begin
+        (try! (check-initialized))
+        
+        (let (
+            (proposer-balance (unwrap! (map-get? balances tx-sender) err-unauthorized))
+            (proposal-id (+ (var-get proposal-count) u1))
+        )
+            (asserts! (> proposer-balance u0) err-unauthorized)
+            
+            ;; Create new proposal
+            (map-set proposals proposal-id {
+                proposer: tx-sender,
+                description: description,
+                amount: amount,
+                target: target,
+                expires-at: (+ block-height duration),
+                executed: false,
+                yes-votes: u0,
+                no-votes: u0
+            })
+            
+            (var-set proposal-count proposal-id)
+            (ok proposal-id)
+        )
+    )
+)
