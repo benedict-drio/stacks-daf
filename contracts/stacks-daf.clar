@@ -23,6 +23,12 @@
 (define-constant err-below-minimum (err u109))
 (define-constant err-locked-period (err u110))
 (define-constant err-transfer-failed (err u111))
+(define-constant err-invalid-duration (err u112))
+(define-constant err-zero-amount (err u113))
+(define-constant err-invalid-target (err u114))
+(define-constant err-invalid-description (err u115))
+(define-constant minimum-duration u144) ;; minimum 1 day (assuming 10min blocks)
+(define-constant maximum-duration u20160) ;; maximum 14 days
 
 ;; Data Variables
 (define-data-var total-supply uint u0)
@@ -163,13 +169,19 @@
     (begin
         (try! (check-initialized))
         
+        ;; Input validation
+        (asserts! (> (len description) u0) err-invalid-description)
+        (asserts! (> amount u0) err-zero-amount)
+        (asserts! (not (is-eq target (as-contract tx-sender))) err-invalid-target)
+        (asserts! (and (>= duration minimum-duration) (<= duration maximum-duration)) err-invalid-duration)
+        
         (let (
             (proposer-balance (unwrap! (map-get? balances tx-sender) err-unauthorized))
             (proposal-id (+ (var-get proposal-count) u1))
         )
             (asserts! (> proposer-balance u0) err-unauthorized)
             
-            ;; Create new proposal
+            ;; Create new proposal with validated inputs
             (map-set proposals proposal-id {
                 proposer: tx-sender,
                 description: description,
@@ -186,6 +198,7 @@
         )
     )
 )
+
 
 (define-public (vote (proposal-id uint) (vote-for bool))
     (begin
