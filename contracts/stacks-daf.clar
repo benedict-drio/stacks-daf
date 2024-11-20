@@ -34,11 +34,26 @@
 
 ;; Data Maps
 (define-map balances principal uint)
+
 (define-map deposits
     principal
     {
         amount: uint,
         lock-until: uint,
         last-reward-block: uint
+    }
+)
+
+(define-map proposals
+    uint
+    {
+        proposer: principal,
+        description: (string-ascii 256),
+        amount: uint,
+        target: principal,
+        expires-at: uint,
+        executed: bool,
+        yes-votes: uint,
+        no-votes: uint
     }
 )
