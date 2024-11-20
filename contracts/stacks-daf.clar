@@ -238,3 +238,9 @@
         )
     )
 )
+
+
+;; Read-only functions
+(define-read-only (get-balance (account principal))
+    (ok (default-to u0 (map-get? balances account)))
+)
