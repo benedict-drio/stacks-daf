@@ -84,3 +84,13 @@
         (ok true)
     )
 )
+
+(define-private (mint-tokens (account principal) (amount uint))
+    (let (
+        (current-balance (default-to u0 (map-get? balances account)))
+    )
+        (map-set balances account (+ current-balance amount))
+        (var-set total-supply (+ (var-get total-supply) amount))
+        (ok true)
+    )
+)
