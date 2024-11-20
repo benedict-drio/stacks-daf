@@ -34,7 +34,6 @@
 
 ;; Data Maps
 (define-map balances principal uint)
-
 (define-map deposits
     principal
     {
@@ -239,8 +238,19 @@
     )
 )
 
-
 ;; Read-only functions
 (define-read-only (get-balance (account principal))
     (ok (default-to u0 (map-get? balances account)))
+)
+
+(define-read-only (get-total-supply)
+    (ok (var-get total-supply))
+)
+
+(define-read-only (get-proposal (proposal-id uint))
+    (ok (map-get? proposals proposal-id))
+)
+
+(define-read-only (get-deposit-info (account principal))
+    (ok (map-get? deposits account))
 )
