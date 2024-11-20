@@ -105,3 +105,13 @@
         (ok true)
     )
 )
+
+;; Public Functions
+(define-public (initialize)
+    (begin
+        (asserts! (is-contract-owner) err-owner-only)
+        (asserts! (not (var-get initialized)) err-already-initialized)
+        (var-set initialized true)
+        (ok true)
+    )
+)
