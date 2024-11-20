@@ -94,3 +94,14 @@
         (ok true)
     )
 )
+
+(define-private (burn-tokens (account principal) (amount uint))
+    (let (
+        (current-balance (default-to u0 (map-get? balances account)))
+    )
+        (asserts! (>= current-balance amount) err-insufficient-balance)
+        (map-set balances account (- current-balance amount))
+        (var-set total-supply (- (var-get total-supply) amount))
+        (ok true)
+    )
+)
