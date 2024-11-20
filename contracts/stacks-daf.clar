@@ -135,3 +135,22 @@
         (mint-tokens tx-sender amount)
     )
 )
+
+(define-public (withdraw (amount uint))
+    (begin
+        (try! (check-initialized))
+        
+        (let (
+            (deposit-info (unwrap! (map-get? deposits tx-sender) err-unauthorized))
+        )
+            (asserts! (>= block-height (get lock-until deposit-info)) err-locked-period)
+            (asserts! (>= amount u0) err-invalid-amount)
+            
+            ;; Burn tokens first
+            (try! (burn-tokens tx-sender amount))
+            
+            ;; Transfer STX back to user
+            (as-contract (stx-transfer? amount (as-contract tx-sender) tx-sender))
+        )
+    )
+)
