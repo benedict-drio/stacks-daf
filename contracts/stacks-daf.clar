@@ -31,3 +31,14 @@
 (define-data-var initialized bool false)
 (define-data-var last-rebalance uint u0)
 (define-data-var proposal-count uint u0)
+
+;; Data Maps
+(define-map balances principal uint)
+(define-map deposits
+    principal
+    {
+        amount: uint,
+        lock-until: uint,
+        last-reward-block: uint
+    }
+)
