@@ -64,3 +64,7 @@
 (define-private (is-contract-owner)
     (is-eq tx-sender contract-owner)
 )
+
+(define-private (check-initialized)
+    (ok (asserts! (var-get initialized) err-not-initialized))
+)
