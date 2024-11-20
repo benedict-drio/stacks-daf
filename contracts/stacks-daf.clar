@@ -115,3 +115,23 @@
         (ok true)
     )
 )
+
+(define-public (deposit (amount uint))
+    (begin
+        (try! (check-initialized))
+        (asserts! (>= amount (var-get minimum-deposit)) err-below-minimum)
+        
+        ;; Transfer STX to contract
+        (try! (stx-transfer? amount tx-sender (as-contract tx-sender)))
+        
+        ;; Update deposit records
+        (map-set deposits tx-sender {
+            amount: amount,
+            lock-until: (+ block-height (var-get lock-period)),
+            last-reward-block: block-height
+        })
+        
+        ;; Mint fund tokens
+        (mint-tokens tx-sender amount)
+    )
+)
