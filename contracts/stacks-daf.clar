@@ -68,3 +68,7 @@
 (define-private (check-initialized)
     (ok (asserts! (var-get initialized) err-not-initialized))
 )
+
+(define-private (calculate-voting-power (voter principal))
+    (default-to u0 (map-get? balances voter))
+)
