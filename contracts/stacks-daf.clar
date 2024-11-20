@@ -23,3 +23,11 @@
 (define-constant err-below-minimum (err u109))
 (define-constant err-locked-period (err u110))
 (define-constant err-transfer-failed (err u111))
+
+;; Data Variables
+(define-data-var total-supply uint u0)
+(define-data-var minimum-deposit uint u1000000) ;; in microSTX
+(define-data-var lock-period uint u1440) ;; ~10 days in blocks
+(define-data-var initialized bool false)
+(define-data-var last-rebalance uint u0)
+(define-data-var proposal-count uint u0)
