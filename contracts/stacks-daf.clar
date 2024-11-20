@@ -57,3 +57,5 @@
         no-votes: uint
     }
 )
+
+(define-map votes {proposal-id: uint, voter: principal} bool)
