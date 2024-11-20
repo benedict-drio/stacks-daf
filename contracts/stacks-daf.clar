@@ -217,3 +217,24 @@
         )
     )
 )
+
+(define-public (execute-proposal (proposal-id uint))
+    (begin
+        (try! (check-initialized))
+        
+        (let (
+            (proposal (unwrap! (map-get? proposals proposal-id) err-proposal-not-found))
+        )
+            (asserts! (not (get executed proposal)) err-unauthorized)
+            (asserts! (>= block-height (get expires-at proposal)) err-proposal-expired)
+            (asserts! (> (get yes-votes proposal) (get no-votes proposal)) err-unauthorized)
+            
+            ;; Execute proposal (transfer funds)
+            (try! (as-contract (stx-transfer? (get amount proposal) (as-contract tx-sender) (get target proposal))))
+            
+            ;; Mark proposal as executed
+            (map-set proposals proposal-id (merge proposal {executed: true}))
+            (ok true)
+        )
+    )
+)
