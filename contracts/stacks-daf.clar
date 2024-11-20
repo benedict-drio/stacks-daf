@@ -72,3 +72,15 @@
 (define-private (calculate-voting-power (voter principal))
     (default-to u0 (map-get? balances voter))
 )
+
+(define-private (transfer-tokens (sender principal) (recipient principal) (amount uint))
+    (let (
+        (sender-balance (default-to u0 (map-get? balances sender)))
+        (recipient-balance (default-to u0 (map-get? balances recipient)))
+    )
+        (asserts! (>= sender-balance amount) err-insufficient-balance)
+        (map-set balances sender (- sender-balance amount))
+        (map-set balances recipient (+ recipient-balance amount))
+        (ok true)
+    )
+)
